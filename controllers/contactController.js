@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import Contact from "../models/Contact.js"; // ✅ Import your model
 
 export const sendContactEmail = async (req, res) => {
   const { name, email, message } = req.body;
@@ -8,6 +9,10 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
+    // ✅ Save to MongoDB
+    const newContact = new Contact({ name, email, message });
+    await newContact.save();
+
     // Create transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -56,9 +61,9 @@ export const sendContactEmail = async (req, res) => {
     await transporter.sendMail(adminMail);
     await transporter.sendMail(userMail);
 
-    res.status(200).json({ success: true, message: "Emails sent successfully!" });
+    res.status(200).json({ success: true, message: "Message saved & emails sent!" });
   } catch (error) {
-    console.error("❌ Email Error:", error);
-    res.status(500).json({ success: false, message: "Failed to send emails" });
+    console.error("❌ Error:", error);
+    res.status(500).json({ success: false, message: "Failed to process request" });
   }
 };
