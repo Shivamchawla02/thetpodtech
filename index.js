@@ -3,8 +3,12 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import contactRoutes from "./routes/contactRoutes.js";
+import connectDB from "./config/db.js";
 
 dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
